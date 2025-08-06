@@ -113,6 +113,7 @@ PyAudio==0.2.14
 pycparser==2.22
 pycryptodome==3.21.0
 pydantic==2.7.1
+pydantic-core==2.18.2
 pydantic-settings==2.9.1
 pydub==0.25.1
 Pygments==2.18.0
