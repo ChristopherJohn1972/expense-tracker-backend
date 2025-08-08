@@ -75,6 +75,12 @@ jaraco.functools==4.1.0
 Jinja2==3.1.6
 jmespath==1.0.1
 keyring==25.6.0
+Kivy==2.3.0
+kivy-deps.angle==0.4.0
+kivy-deps.glew==0.3.1
+kivy-deps.sdl2==0.7.0
+Kivy-Garden==0.1.5
+kivy_garden.matplotlib==0.1.1.dev0
 kiwisolver==1.4.8
 liboqs-python @ git+https://github.com/open-quantum-safe/liboqs-python.git@1a29e9342182c829f4fc2ff47b5366796c7ffb64
 MarkupSafe==3.0.2
@@ -113,14 +119,13 @@ PyAudio==0.2.14
 PyAutoGUI==0.9.54
 pycparser==2.22
 pycryptodome==3.21.0
-pydantic==2.11.7
+pydantic>=2.7,<3.0
 pydantic-settings==2.9.1
 pydantic_core==2.33.2
 pydub==0.25.1
 pygame==2.6.1
 PyGetWindow==0.0.9
 Pygments==2.18.0
-pyjnius==1.6.1
 PyJWT==2.10.1
 PyKCS11==1.5.17
 PyMsgBox==1.0.9
