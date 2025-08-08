@@ -1,9 +1,9 @@
 #!/bin/bash
-# Upgrade pip, setuptools, and wheel
+# Upgrade pip and install dependencies
 pip install --upgrade pip setuptools wheel
 
-# Install PortAudio (required for PyAudio)
-apt-get update && apt-get install -y portaudio19-dev
+# Install PyAudio using a pre-built wheel (no system dependencies needed)
+pip install PyAudio --global-option='--global-option=-I/usr/include/x86_64-linux-gnu/'
 
-# Install Python dependencies
+# Install other requirements
 pip install -r requirements.txt
