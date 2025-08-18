@@ -171,11 +171,9 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     return user
 
 # Routes
-@app.post("/register", response_model=UserResponse)
-def register(user: UserCreate):
-    # Check if email exists
-    users = users_ref.get() or {}
-    for uid, user_data in users.items():
+@app.post("/api/auth/register", response_model=UserResponse)
+def register_alias(user: UserCreate):
+    return register(user)
         if user_data.get('email') == user.email:
             raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -192,8 +190,8 @@ def register(user: UserCreate):
 
     return {"id": user_id, "email": user.email, "name": user.name}
 
-@app.post("/token", response_model=Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+@app.post("/api/auth/login", response_model=Token)
+def login_alias(form_data: OAuth2PasswordRequestForm = Depends()):
     # Find user by email
     users = users_ref.get() or {}
     user = None
