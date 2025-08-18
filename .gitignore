@@ -1,5 +1,13 @@
-# Node modules
-node_modules/
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+env/
+venv/
 
 # Environment variables
 .env
@@ -13,6 +21,4 @@ node_modules/
 # Build output
 dist/
 build/
-
-__pycache__/
-*.pyc
+*.egg-info/

@@ -1,4 +1,4 @@
-from FastAPIBackend import app, Depends, HTTPException, status, UploadFile, File
+from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -14,25 +14,11 @@ from firebase_admin import credentials, db
 import json
 import logging
 
-firebase_config = {
-    "type": os.environ.get("type"),
-    "project_id": os.environ.get("FIREBASE_PROJECT_ID"),
-    "private_key_id": os.environ.get("FIREBASE_PRIVATE_KEY_ID"),
-    "private_key": os.environ.get("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
-    "client_email": os.environ.get("FIREBASE_CLIENT_EMAIL"),
-    "client_id": os.environ.get("FIREBASE_CLIENT_ID"),
-    "auth_uri": os.environ.get("auth_uri"),
-    "token_uri": os.environ.get("token_uri"),
-    "auth_provider_x509_cert_url": os.environ.get("auth_provider_x509_cert_url"),
-    "client_x509_cert_url": os.environ.get("client_x509_cert_url"),
-    "universe_domain": os.environ.get("universe_domain"),
-}
-
-cred = credentials.Certificate(firebase_config)
+# Initialize Firebase
+cred = credentials.Certificate("serviceAccountKey.json")  # Download from Firebase console
 firebase_admin.initialize_app(cred, {
-    'databaseURL': os.environ.get("DATABASE_URL")  # Put DB URL in env vars too
+    'databaseURL': 'https://expense-tracker-1ac93-default-rtdb.firebaseio.com/'
 })
-
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -43,7 +29,7 @@ app.add_middleware(
     allow_origins=["https://christopherjohn1972.github.io"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"],    
 )
 
 # Security configurations
@@ -331,10 +317,3 @@ def save_receipt(
 @app.get("/")
 def health_check():
     return {"status": "running", "version": "1.0", "timestamp": datetime.utcnow()}
-
-if __name__ == "__main__":
-    import os
-    import uvicorn
-
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
