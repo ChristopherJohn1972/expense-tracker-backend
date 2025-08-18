@@ -15,7 +15,19 @@ import json
 import logging
 
 # Initialize Firebase
-cred = credentials.Certificate("serviceAccountKey.json")  # Download from Firebase console
+cred = credentials.Certificate({
+    "type": os.getenv("type"),
+    "project_id": os.getenv("FIREBASE_PROJECT_ID"),
+    "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
+    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
+    "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
+    "client_id": os.getenv("FIREBASE_CLIENT_ID"),
+    "auth_uri": os.getenv("auth_uri"),
+    "token_uri": os.getenv("token_uri"),
+    "auth_provider_x509_cert_url": os.getenv("auth_provider_x509_cert_url"),
+    "client_x509_cert_url": os.getenv("client_x509_cert_url")
+})
+
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://expense-tracker-1ac93-default-rtdb.firebaseio.com/'
 })
