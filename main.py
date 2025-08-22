@@ -35,10 +35,10 @@ firebase_admin.initialize_app(cred, {
 # Initialize FastAPI app
 app = FastAPI()
 
-# CORS Configuration
+# CORS Configuration - Update this section in your main.py
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://christopherjohn1972.github.io"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -73,6 +73,35 @@ users_ref = db.reference('users')
 expenses_ref = db.reference('expenses')
 wallets_ref = db.reference('wallets')
 receipts_ref = db.reference('receipts')
+
+# Add these OPTIONS handlers to your main.py to handle preflight requests
+@app.options("/api/auth/login")
+async def options_login():
+    return {"message": "OK"}
+
+@app.options("/api/auth/register")
+async def options_register():
+    return {"message": "OK"}
+
+@app.options("/api/users/me")
+async def options_users_me():
+    return {"message": "OK"}
+
+@app.options("/expenses")
+async def options_expenses():
+    return {"message": "OK"}
+
+@app.options("/wallets")
+async def options_wallets():
+    return {"message": "OK"}
+
+@app.options("/upload-receipt")
+async def options_upload_receipt():
+    return {"message": "OK"}
+
+@app.options("/save-receipt")
+async def options_save_receipt():
+    return {"message": "OK"}
 
 # Pydantic models
 class UserCreate(BaseModel):
@@ -172,23 +201,42 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 
 # Routes
 @app.post("/api/auth/register", response_model=UserResponse)
+@app.post("/api/auth/register", response_model=UserResponse)
 def register_alias(user: UserCreate):
-    return register(user)
-    if user_data.get('email') == user.email:
-        raise HTTPException(status_code=400, detail="Email already registered")
+    # Input validation
+    if not user.email or not user.password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
 
-    # Create user
+    users = users_ref.get() or {}
+
+    # Check if email already exists
+    for uid, user_data in users.items():
+        if user_data.get('email') == user.email:
+            raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Create user ID and hash password
     user_id = str(uuid.uuid4())
-    hashed_password = get_password_hash(user.password)
+    try:
+        hashed_password = get_password_hash(user.password)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error hashing password: {e}")
+
+    # Prepare user data
     user_data = {
         "email": user.email,
         "password_hash": hashed_password,
-        "name": user.name,
+        "name": user.name if user.name else "",
         "created_at": datetime.utcnow().isoformat()
     }
-    users_ref.child(user_id).set(user_data)
 
-    return {"id": user_id, "email": user.email, "name": user.name}
+    # Save to Firebase
+    try:
+        users_ref.child(user_id).set(user_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving user: {e}")
+
+    # Return user info
+    return {"id": user_id, "email": user.email, "name": user.name if user.name else ""}
 
 @app.post("/api/auth/login", response_model=Token)
 def login_alias(form_data: OAuth2PasswordRequestForm = Depends()):
