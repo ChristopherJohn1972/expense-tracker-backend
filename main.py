@@ -41,7 +41,7 @@ app.add_middleware(
     allow_origins=["https://christopherjohn1972.github.io"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],    
+    allow_headers=["*"],
 )
 
 # Security configurations
@@ -174,8 +174,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 @app.post("/api/auth/register", response_model=UserResponse)
 def register_alias(user: UserCreate):
     return register(user)
-        if user_data.get('email') == user.email:
-            raise HTTPException(status_code=400, detail="Email already registered")
+    if user_data.get('email') == user.email:
+        raise HTTPException(status_code=400, detail="Email already registered")
 
     # Create user
     user_id = str(uuid.uuid4())
