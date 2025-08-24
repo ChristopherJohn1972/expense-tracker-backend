@@ -28,6 +28,15 @@ def save_data(data):
 def index():
     return "✅ Expense API working. Use /expenses endpoints."
 
+@app.route('/api/users/me', methods=['GET'])
+@token_required
+def get_current_user(current_user):
+    return jsonify({
+        'id': current_user['id'],
+        'email': current_user['email'],
+        'name': current_user.get('name', '')
+    })
+
 @app.route('/expenses', methods=['POST'])
 @token_required
 def create_expense(current_user):
